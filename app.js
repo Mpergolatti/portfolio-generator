@@ -16,6 +16,8 @@ const promptUser = () => {
           }
         }
       },
+
+        // Prompts user to add their github username.
       {
         type: 'input',
         name: 'github',
@@ -29,11 +31,28 @@ const promptUser = () => {
           }
         }
       },
+
+        // Confirmation for an About Me section
+      {
+        type: 'confirm',
+        name: 'confirmAbout',
+        message: 'Would you like to enter some information about yourself for an "About" section?',
+        default: true
+      },
+
+        // Provide some information about yourself section.
       {
         type: 'input',
         name: 'about',
-        message: 'Provide some information about yourself'
-      }
+        message: 'Provide some information about yourself',
+          when: ({ confirmAbout }) => {
+            if (confirmAbout) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
     ]);
   };
 
@@ -57,10 +76,13 @@ const promptUser = () => {
     }
     
       return inquirer.prompt([
+          // Asks User for their project name
         {
           type: 'input',
           name: 'name',
           message: 'What is the name of your project?',
+
+            // Requires the user to add information or a prompt pops up 
           validate: projectName => {
             if (projectName) {
               return true;
@@ -71,6 +93,7 @@ const promptUser = () => {
           }
         },
         {
+          // Asks user to describe their project
           type: 'input',
           name: 'description',
           message: 'Provide a description of the project (Required)',

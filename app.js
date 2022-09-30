@@ -1,9 +1,11 @@
+const fs = require('fs');
 const inquirer = require('inquirer');
+const generatePage = require('./src/page-template.js');
 
 const promptUser = () => {
   return inquirer.prompt([
-
-      {
+    
+    {
         type: 'input',
         name: 'name',
         message: 'What is your name?',
@@ -45,13 +47,7 @@ const promptUser = () => {
         type: 'input',
         name: 'about',
         message: 'Provide some information about yourself',
-          when: ({ confirmAbout }) => {
-            if (confirmAbout) {
-              return true;
-            } else {
-              return false;
-            }
-          }
+          when: ({ confirmAbout }) => confirmAbout
         }
     ]);
   };
@@ -116,8 +112,8 @@ const promptUser = () => {
           type: 'input',
           name: 'link',
           message: 'Enter the github link to your project. (Required)',
-          validate: projectGithubLink => {
-            if (projectGithubLink) {
+          validate: linkInput => {
+            if (linkInput) {
               return true;
             } else {
               console.log('Please enter your github username!');
@@ -155,13 +151,16 @@ const promptUser = () => {
     // promptProject().then(answers => console.log(answers));
 
     promptUser()
-      // .then(answers => console.log(answers))
-      .then(promptProject)
-      // .then(projectAnswers => console.log(projectAnswers))
-      .then(portfolioData => {
-        console.log(portfolioData);
-        
-      });
+  .then(promptProject)
+  .then(portfolioData => {
+    const pageHTML = generatePage(portfolioData);
+
+    fs.writeFile('./index.html', pageHTML, err => {
+      if (err) throw new Error(err);
+
+      console.log('Page created! Check out index.html in this directory to see it!');
+    });
+  });
 
 
 
@@ -170,8 +169,7 @@ const promptUser = () => {
 
 
 
-// const fs = require('fs');
-// const generatePage = require('./src/page-template.js');
+
 
 // const pageHTML = generatePage(name, github);
 
